@@ -14,7 +14,7 @@ LOCAL_MODULE_TAGS := optional
 
 LOCAL_SHARED_LIBRARIES := libc libm libdl
 
-LOCAL_SHARED_LIBRARIES += libiprouteutil libnetlink
+LOCAL_STATIC_LIBRARIES += libiprouteutil libnetlink
 
 LOCAL_C_INCLUDES := \
 		$(LOCAL_PATH)/../include \

@@ -27,7 +27,7 @@ LOCAL_CFLAGS := -O2 -g -W -Wall \
 	-DHAVE_EXT2_IOCTLS \
 	-DHAVE_LINUX_FD_H \
 	-DHAVE_TYPE_SSIZE_T
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
 
 include $(CLEAR_VARS)
 LOCAL_SRC_FILES := ll_map.c libnetlink.c
@@ -57,4 +57,4 @@ LOCAL_CFLAGS := -O2 -g -W -Wall \
 	-DHAVE_LINUX_FD_H \
 	-DHAVE_TYPE_SSIZE_T
 
-include $(BUILD_SHARED_LIBRARY)
+include $(BUILD_STATIC_LIBRARY)
