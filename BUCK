@@ -8,6 +8,7 @@ android_binary(
   deps = [
     ':lv-res',
 	':lv-src',
+	'//jni:lv-ndk',
   ],
 )
 
@@ -22,6 +23,7 @@ android_binary(
   deps = [
     ':lv-res',
 	':lv-src',
+	'//jni:lv-ndk',
   ],
 )
 

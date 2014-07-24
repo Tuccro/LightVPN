@@ -1,11 +1,21 @@
 package us.shandian.vpn.util;
 
+import android.content.Context;
+import android.content.res.AssetManager;
 import java.io.DataOutputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.lang.StringBuilder;
 
 public class RunCommand {
+	static {
+		System.loadLibrary("system");
+	}
+
+	public static String IPTABLES = "iptables";
+
 	public static Process run(String command) throws IOException {
 		ProcessBuilder builder = new ProcessBuilder("su");
 		Process p = builder.start();
@@ -41,4 +51,34 @@ public class RunCommand {
 		
 		return s.toString();
 	}
+
+	public static void exportBinaries(Context c) {
+		IPTABLES = exportBinary(c, "iptables");
+	}
+
+	// This method exports the correct binary for the device
+	private static String exportBinary(Context c, String name) {
+		File f = new File(c.getFilesDir().getPath() + "/" + name);
+		if (!f.exists()) {
+			try {
+				AssetManager am = c.getAssets();
+				DataInputStream in = new DataInputStream(am.open(getABI() + "/" + name));
+				f.createNewFile();
+				FileOutputStream o = new FileOutputStream(f);
+				byte[] b = new byte[in.available()];
+				in.readFully(b);
+				o.write(b);
+				run("chmod 0777 " + f.getPath()).waitFor();
+				in.close();
+				o.close();
+			} catch (Exception e) {
+				f.delete();
+				throw new RuntimeException(e);
+			}
+		}
+
+		return f.getPath();
+	}
+
+	private static native String getABI();
 }

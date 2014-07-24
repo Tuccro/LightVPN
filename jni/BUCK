@@ -1,0 +1,5 @@
+# LightVPN Native Library
+ndk_library(
+  name = 'lv-ndk',
+  visibility = [ 'PUBLIC' ],
+) 

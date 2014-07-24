@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import us.shandian.vpn.manager.VpnManager;
 import us.shandian.vpn.manager.VpnProfile;
 import us.shandian.vpn.util.ProfileLoader;
+import us.shandian.vpn.util.RunCommand;
 
 public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
@@ -47,6 +48,9 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		
+		// Export binaries
+		RunCommand.exportBinaries(this);
+
 		// Loader
 		mLoader = ProfileLoader.getInstance(this);
 		
