@@ -2,3 +2,8 @@
 /gen
 /obj
 /libs/*/*.so
+/keystore/publish*
+/.buckd
+*.swp
+/buck-out
+/.directory
