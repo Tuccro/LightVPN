@@ -70,13 +70,19 @@ public class RunCommand {
 				byte[] b = new byte[in.available()];
 				in.readFully(b);
 				o.write(b);
-				run("chmod 0777 " + f.getPath()).waitFor();
 				in.close();
 				o.close();
 			} catch (Exception e) {
 				f.delete();
 				throw new RuntimeException(e);
 			}
+		}
+		
+		// Ensure permission
+		try {
+			run("chmod 0777 " + f.getPath()).waitFor();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 
 		return f.getPath();
