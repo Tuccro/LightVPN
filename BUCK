@@ -29,7 +29,7 @@ android_binary(
 android_resource(
   name = 'lv-res',
   res = './res',
-#  assets = './assets',
+  assets = './assets',
   package = 'us.shandian.vpn',
   visibility = [ 'PUBLIC' ],
 )

@@ -7,3 +7,7 @@
 *.swp
 /buck-out
 /.directory
+/assets
+/libs/armeabi
+/libs/armeabi-v7a
+/libs/x86
