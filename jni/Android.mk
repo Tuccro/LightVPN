@@ -23,5 +23,14 @@ iptables_subdirs := $(addprefix $(LOCAL_PATH)/iptables/,$(addsuffix /Android.mk,
 	))
 include $(iptables_subdirs)
 
+# iproute2
+LOCAL_PATH := $(ROOT_PATH)
+ip_subdirs := $(addprefix $(LOCAL_PATH)/iproute2/,$(addsuffix /Android.mk, \
+	ip \
+	lib \
+	tc \
+	))
+include $(ip_subdirs)
+
 # Import cpufeatures
 $(call import-module,android/cpufeatures)

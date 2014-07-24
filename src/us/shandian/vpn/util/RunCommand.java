@@ -15,6 +15,7 @@ public class RunCommand {
 	}
 
 	public static String IPTABLES = "iptables";
+	public static String IP = "ip";
 
 	public static Process run(String command) throws IOException {
 		ProcessBuilder builder = new ProcessBuilder("su");
@@ -54,6 +55,7 @@ public class RunCommand {
 
 	public static void exportBinaries(Context c) {
 		IPTABLES = exportBinary(c, "iptables");
+		IP = exportBinary(c, "ip");
 	}
 
 	// This method exports the correct binary for the device
