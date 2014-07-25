@@ -16,6 +16,8 @@ public class RunCommand {
 
 	public static String IPTABLES = "iptables";
 	public static String IP = "ip";
+	public static String PGREP = "pgrep";
+	public static String PKILL = "pkill";
 
 	public static Process run(String command) throws IOException {
 		ProcessBuilder builder = new ProcessBuilder("su");
@@ -56,6 +58,9 @@ public class RunCommand {
 	public static void exportBinaries(Context c) {
 		IPTABLES = exportBinary(c, "iptables");
 		IP = exportBinary(c, "ip");
+		PGREP = exportBinary(c, "pgrep");
+		PKILL = exportBinary(c, "pkill");
+		ensurePermissions(c);
 	}
 
 	// This method exports the correct binary for the device
@@ -78,14 +83,15 @@ public class RunCommand {
 			}
 		}
 		
-		// Ensure permission
+		return f.getPath();
+	}
+
+	private static void ensurePermissions(Context c) {
 		try {
-			run("chmod 0777 " + f.getPath()).waitFor();
+			run("chmod -R 0777 " + c.getFilesDir()).waitFor();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
-
-		return f.getPath();
 	}
 
 	private static native String getABI();
