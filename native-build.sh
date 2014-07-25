@@ -9,6 +9,11 @@ do
   for eabi in armeabi armeabi-v7a x86
   do
     mkdir -p assets/$eabi
-	mv libs/$eabi/$app assets/$eabi/$app
+    mv libs/$eabi/$app assets/$eabi/$app
   done
+done
+
+for eabi in armeabi armeabi-v7a x86
+do
+  cp assets/$eabi/pgrep assets/$eabi/pkill
 done
