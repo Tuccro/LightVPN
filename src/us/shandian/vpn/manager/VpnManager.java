@@ -5,6 +5,10 @@ import android.text.TextUtils;
 import java.lang.StringBuilder;
 
 import us.shandian.vpn.util.RunCommand;
+import static us.shandian.vpn.util.RunCommand.IP;
+import static us.shandian.vpn.util.RunCommand.IPTABLES;
+import static us.shandian.vpn.util.RunCommand.PGREP;
+import static us.shandian.vpn.util.RunCommand.PKILL;
 
 public class VpnManager
 {
@@ -50,12 +54,12 @@ public class VpnManager
 	public static void stopVpn() {
 		// Kill all vpn stuff
 		StringBuilder s = new StringBuilder();
-		s.append("pkill mtpd\n")
-		 .append("pkill pppd\n")
-		 .append("ip ro flush dev ").append(PPP_INTERFACE).append("\n")
-		 .append("iptables -t nat -F\n")
-		 .append("iptables -t nat -X\n")
-		 .append("iptables -t nat -Z");
+		s.append(PKILL).append(" mtpd\n")
+		 .append(PKILL).append(" pppd\n")
+		 .append(IP).append(" ro flush dev ").append(PPP_INTERFACE).append("\n")
+		 .append(IPTABLES).append(" -t nat -F\n")
+		 .append(IPTABLES).append(" -t nat -X\n")
+		 .append(IPTABLES).append(" -t nat -Z");
 		
 		try {
 			RunCommand.run(s.toString()).waitFor();
@@ -66,7 +70,7 @@ public class VpnManager
 	
 	public static boolean isVpnRunning() {
 		try {
-			Process p = RunCommand.run("pgrep mtpd");
+			Process p = RunCommand.run(PGREP + " mtpd");
 			p.waitFor();
 			if (!TextUtils.isEmpty(RunCommand.readInput(p).replace("\n", "").trim())) {
 				return true;
@@ -82,7 +86,7 @@ public class VpnManager
 		String routes;
 		
 		try {
-			Process p = RunCommand.run("ip ro");
+			Process p = RunCommand.run(IP + " ro");
 			p.waitFor();
 			routes = RunCommand.readInput(p);
 		} catch (Exception e) {
@@ -138,7 +142,7 @@ public class VpnManager
 		
 		for (int i = 0; i < n; i++) {
 			try {
-				Process p = RunCommand.run("ip ro");
+				Process p = RunCommand.run(IP + " ro");
 				p.waitFor();
 				String out = RunCommand.readInput(p);
 				
@@ -157,10 +161,10 @@ public class VpnManager
 	
 	private static void setupRoute() {
 		StringBuilder s = new StringBuilder();
-		s.append("ip ro add 0.0.0.0/1 dev ").append(PPP_INTERFACE).append("\n")
-		 .append("ip ro add 128.0.0.0/1 dev ").append(PPP_INTERFACE).append("\n")
-		 .append("ip ru add from all table 200 \n")
-		 .append("ip ro add default dev ").append(PPP_INTERFACE).append(" table 200");
+		s.append(IP).append(" ro add 0.0.0.0/1 dev ").append(PPP_INTERFACE).append("\n")
+		 .append(IP).append(" ro add 128.0.0.0/1 dev ").append(PPP_INTERFACE).append("\n")
+		 .append(IP).append(" ru add from all table 200 \n")
+		 .append(IP).append(" ro add default dev ").append(PPP_INTERFACE).append(" table 200");
 		
 		// Run
 		try {
@@ -192,9 +196,9 @@ public class VpnManager
 		}
 		
 		StringBuilder s = new StringBuilder();
-		s.append("iptables -t nat -A OUTPUT -d ").append(dns1).append("/32 -o ")
+		s.append(IPTABLES).append(" -t nat -A OUTPUT -d ").append(dns1).append("/32 -o ")
 			.append(PPP_INTERFACE).append(" -p udp -m udp --dport 53 -j DNAT --to-destination ").append(profile.dns1).append(":53\n")
-		 .append("iptables -t nat -A OUTPUT -d ").append(dns2).append("/32 -o ")
+		 .append(IPTABLES).append(" -t nat -A OUTPUT -d ").append(dns2).append("/32 -o ")
 			.append(PPP_INTERFACE).append(" -p udp -m udp --dport 53 -j DNAT --to-destination ").append(profile.dns2).append(":53");
 		
 		try {
