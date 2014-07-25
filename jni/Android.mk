@@ -32,5 +32,8 @@ ip_subdirs := $(addprefix $(LOCAL_PATH)/iproute2/,$(addsuffix /Android.mk, \
 	))
 include $(ip_subdirs)
 
+# procps
+include $(ROOT_PATH)/procps/Android.mk
+
 # Import cpufeatures
 $(call import-module,android/cpufeatures)

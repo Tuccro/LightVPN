@@ -4,7 +4,7 @@ rm -rf assets
 ndk-build clean
 ndk-build
 mkdir assets
-for app in iptables ip6tables ip tc
+for app in iptables ip6tables ip tc pgrep
 do
   for eabi in armeabi armeabi-v7a x86
   do
