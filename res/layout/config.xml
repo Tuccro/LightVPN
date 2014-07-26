@@ -7,7 +7,10 @@
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
 		android:alignmentMode="alignBounds"
+		android:orientation="horizontal"
 		android:columnCount="2"
+		android:useDefaultMargins="true"
+		android:columnOrderPreserved="false"
  		android:padding="5dp" >
 
 		<TextView
@@ -18,7 +21,8 @@
 
 		<EditText
 			android:id="@+id/server"
-			android:layout_width="match_parent"
+			android:ems="10"
+			android:layout_width="wrap_content"
 			android:layout_height="50dp"
 			android:singleLine="true" />
 
@@ -30,7 +34,8 @@
 
 		<EditText
 			android:id="@+id/username"
-			android:layout_width="match_parent"
+			android:ems="10"
+			android:layout_width="wrap_content"
 			android:layout_height="50dp"
 			android:singleLine="true" />
 
@@ -42,7 +47,8 @@
 
 		<EditText
 			android:id="@+id/password"
-			android:layout_width="match_parent"
+			android:ems="10"
+			android:layout_width="wrap_content"
 			android:layout_height="50dp"
 			android:inputType="textPassword"
 			android:singleLine="true" />
@@ -55,7 +61,8 @@
 
 		<EditText
 			android:id="@+id/dns1"
-			android:layout_width="match_parent"
+			android:ems="10"
+			android:layout_width="wrap_content"
 			android:layout_height="50dp"
 			android:singleLine="true" />
 
@@ -67,7 +74,8 @@
 
 		<EditText
 			android:id="@+id/dns2"
-			android:layout_width="match_parent"
+			android:ems="10"
+			android:layout_width="wrap_content"
 			android:layout_height="50dp"
 			android:singleLine="true" />
 
