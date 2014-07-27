@@ -31,17 +31,20 @@ import us.shandian.vpn.manager.VpnProfile;
 import us.shandian.vpn.util.ProfileLoader;
 import us.shandian.vpn.util.RunCommand;
 
-public class MainActivity extends Activity implements View.OnClickListener, AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
+public class MainActivity extends Activity implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
 	private DrawerLayout mDrawer;
 	private ActionBarDrawerToggle mToggle;
-	private ImageView mFooter;
 	private ListView mList;
 	private ProfileLoader mLoader;
 	private ConfigFragment mFragment;
 	private Switch mSwitch;
 	
 	private ArrayList<String> mArray;
+
+	private MenuItem mMenuNew;
+	private MenuItem mMenuSave;
+	private MenuItem mMenuSwitch;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +64,23 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 		
 		// Drawer
 		mDrawer = (DrawerLayout) findViewById(R.id.drawer);
-		mToggle = new ActionBarDrawerToggle(this, mDrawer, R.drawable.ic_drawer, 0, 0);
+		mToggle = new ActionBarDrawerToggle(this, mDrawer, R.drawable.ic_drawer, 0, 0) {
+			@Override
+			public void onDrawerOpened(View v) {
+				super.onDrawerOpened(v);
+				mMenuNew.setVisible(true);
+				mMenuSave.setVisible(false);
+				mMenuSwitch.setVisible(false);
+			}
+
+			@Override
+			public void onDrawerClosed(View v) {
+				super.onDrawerClosed(v);
+				mMenuNew.setVisible(false);
+				mMenuSave.setVisible(true);
+				mMenuSwitch.setVisible(true);
+			}
+		};
 		mDrawer.setDrawerListener(mToggle);
 		mDrawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
 		
@@ -71,12 +90,8 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 		
 		// List
 		mList = (ListView) findViewById(R.id.profiles);
-		LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		mFooter = (ImageView) inflater.inflate(R.layout.footer, null);
-		mList.addFooterView(mFooter);
 		mList.setOnItemClickListener(this);
 		mList.setOnItemLongClickListener(this);
-		mFooter.setOnClickListener(this);
 		
 	}
 	
@@ -109,7 +124,12 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		
-		mSwitch = (Switch) menu.findItem(R.id.toggle).getActionView();
+		// Get the item
+		mMenuNew = menu.findItem(R.id.new_vpn);
+		mMenuSave = menu.findItem(R.id.save);
+		mMenuSwitch = menu.findItem(R.id.toggle);
+
+		mSwitch = (Switch) mMenuSwitch.getActionView();
 		mSwitch.setChecked(VpnManager.isVpnRunning());
 		mSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 			@Override
@@ -134,6 +154,27 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 			if (p != null) {
 				mLoader.updateProfile(p);
 			}
+		} else if (item.getItemId() == R.id.new_vpn) {
+			final EditText text = new EditText(this);
+			text.setSingleLine(true);
+			new AlertDialog.Builder(this)
+							.setTitle(R.string.input)
+							.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+								@Override
+								public void onClick(DialogInterface dialog, int id) {
+									String name = text.getText().toString().trim();
+									
+									if (!TextUtils.isEmpty(name) && !mArray.contains(name)) {
+										mFragment.setProfile(mLoader.createProfile(name));
+										mArray = reloadList();
+									}
+								}
+							})
+							.setNegativeButton(android.R.string.cancel, null)
+							.setView(text)
+							.create()
+							.show();
+			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
@@ -177,29 +218,6 @@ public class MainActivity extends Activity implements View.OnClickListener, Adap
 		}
 		
 		return true;
-	}
-
-	@Override
-	public void onClick(View v) {
-		final EditText text = new EditText(this);
-		text.setSingleLine(true);
-		new AlertDialog.Builder(this)
-							.setTitle(R.string.input)
-							.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int id) {
-									String name = text.getText().toString().trim();
-									
-									if (!TextUtils.isEmpty(name) && !mArray.contains(name)) {
-										mFragment.setProfile(mLoader.createProfile(name));
-										mArray = reloadList();
-									}
-								}
-							})
-							.setNegativeButton(android.R.string.cancel, null)
-							.setView(text)
-							.create()
-							.show();
 	}
 	
 	private ArrayList<String> reloadList() {
