@@ -17,6 +17,7 @@ public class ConfigFragment extends Fragment {
 	private EditText mDns1;
 	private EditText mDns2;
 	private CheckBox mMppe;
+	private CheckBox mGfwList;
 	
 	// Current
 	private VpnProfile mProfile;
@@ -34,6 +35,7 @@ public class ConfigFragment extends Fragment {
 		mDns1 = (EditText) v.findViewById(R.id.dns1);
 		mDns2 = (EditText) v.findViewById(R.id.dns2);
 		mMppe = (CheckBox) v.findViewById(R.id.mppe);
+		mGfwList = (CheckBox) v.findViewById(R.id.gfwlist);
 		
 		// Default set to disabled
 		mServer.setEnabled(false);
@@ -42,6 +44,7 @@ public class ConfigFragment extends Fragment {
 		mDns1.setEnabled(false);
 		mDns2.setEnabled(false);
 		mMppe.setEnabled(false);
+		mGfwList.setEnabled(false);
 		
 		return v;
 	}
@@ -56,6 +59,7 @@ public class ConfigFragment extends Fragment {
 		mDns1.setEnabled(false);
 		mDns2.setEnabled(false);
 		mMppe.setEnabled(false);
+		mGfwList.setEnabled(false);
 		
 		// Clean up
 		mServer.setText("");
@@ -64,6 +68,7 @@ public class ConfigFragment extends Fragment {
 		mDns1.setText("");
 		mDns2.setText("");
 		mMppe.setChecked(false);
+		mGfwList.setChecked(true);
 		
 		getActivity().getActionBar().setSubtitle(null);
 	}
@@ -78,6 +83,7 @@ public class ConfigFragment extends Fragment {
 		mDns1.setEnabled(true);
 		mDns2.setEnabled(true);
 		mMppe.setEnabled(true);
+		mGfwList.setEnabled(true);
 		
 		// Set value
 		mServer.setText(p.server);
@@ -86,6 +92,7 @@ public class ConfigFragment extends Fragment {
 		mDns1.setText(p.dns1);
 		mDns2.setText(p.dns2);
 		mMppe.setChecked(p.mppe);
+		mGfwList.setChecked(p.gfwlist);
 		
 		// ActionBar
 		getActivity().getActionBar().setSubtitle(p.name);
@@ -100,6 +107,7 @@ public class ConfigFragment extends Fragment {
 		mProfile.dns1 = mDns1.getText().toString().trim();
 		mProfile.dns2 = mDns2.getText().toString().trim();
 		mProfile.mppe = mMppe.isChecked();
+		mProfile.gfwlist = mGfwList.isChecked();
 		
 		return mProfile;
 	}

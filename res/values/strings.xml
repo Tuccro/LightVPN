@@ -13,6 +13,7 @@
 	<string name="disconnect">Off</string>
 	<string name="dns1">DNS 1</string>
 	<string name="dns2">DNS 2</string>
+	<string name="gfwlist">CHN Route</string>
 	
 	<!-- Msg -->
 	<string name="plz_wait">Please wait...</string>

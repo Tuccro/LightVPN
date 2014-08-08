@@ -89,6 +89,18 @@
 			android:id="@+id/mppe"
 			android:layout_width="wrap_content"
 			android:layout_height="50dp" />
+
+		<TextView
+			android:layout_width="wrap_content"
+			android:layout_height="50dp"
+			android:gravity="center_vertical"
+			android:text="@string/gfwlist" />
+
+		<CheckBox
+			android:id="@+id/gfwlist"
+			android:layout_width="wrap_content"
+			android:layout_height="50dp" />
+
     </GridLayout>
 
 </ScrollView>

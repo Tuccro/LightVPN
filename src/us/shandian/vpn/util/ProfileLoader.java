@@ -52,6 +52,7 @@ public class ProfileLoader {
 			p.dns1 = pref.getString("dns1", "8.8.8.8");
 			p.dns2 = pref.getString("dns2", "8.8.4.4");
 			p.mppe = pref.getBoolean("mppe", true);
+			p.gfwlist = pref.getBoolean("gfwlist", true);
 			
 			// Put to map
 			mEntries.put(name, p);
@@ -79,6 +80,7 @@ public class ProfileLoader {
 			edit.putString("dns1", p.dns1);
 			edit.putString("dns2", p.dns2);
 			edit.putBoolean("mppe", p.mppe);
+			edit.putBoolean("gfwlist", p.gfwlist);
 			edit.commit();
 		}
 		

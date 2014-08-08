@@ -13,6 +13,7 @@
 	<string name="disconnect">关闭</string>
 	<string name="dns1">DNS 1</string>
 	<string name="dns2">DNS 2</string>
+	<string name="gfwlist">绕开国内</string>
 	
 	<!-- Msg -->
 	<string name="plz_wait">请稍候...</string>

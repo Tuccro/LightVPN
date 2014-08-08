@@ -264,7 +264,7 @@ public class MainActivity extends Activity implements AdapterView.OnItemClickLis
 			public void run() {
 				VpnProfile p = mFragment.getProfile();
 
-				if (p != null && VpnManager.startVpn(p)) {
+				if (p != null && VpnManager.startVpn(MainActivity.this, p)) {
 					updateProfile(p);
 				} else {
 					setUnchecked();

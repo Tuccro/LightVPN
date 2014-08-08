@@ -1,9 +1,11 @@
 package us.shandian.vpn.manager;
 
+import android.content.Context;
 import android.text.TextUtils;
 
 import java.lang.StringBuilder;
 
+import us.shandian.vpn.R;
 import us.shandian.vpn.util.RunCommand;
 import static us.shandian.vpn.util.RunCommand.IP;
 import static us.shandian.vpn.util.RunCommand.IPTABLES;
@@ -15,9 +17,11 @@ public class VpnManager
 	private static final String PPP_UNIT = "100";
 	private static final String PPP_INTERFACE = "ppp" + PPP_UNIT;
 	private static final int MAX_WAIT_TIME = 15; // seconds
+	private static String IFACE = "eth0";
+	private static String GATEWAY = "0.0.0.0";
 	
 	// Start connection to a PPTP server
-	public static boolean startVpn(VpnProfile p) {
+	public static boolean startVpn(Context context, VpnProfile p) {
 		// Check
 		if (TextUtils.isEmpty(p.server) || TextUtils.isEmpty(p.username) ||
 			TextUtils.isEmpty(p.password)) {
@@ -26,10 +30,10 @@ public class VpnManager
 		}
 		
 		// Iface
-		String iface = getDefaultIface();
+		getDefaultIface();
 		
 		// Arguments to mtpd
-		String[] args = new String[]{iface, "pptp", p.server, "1723", "name", p.username,
+		String[] args = new String[]{IFACE, "pptp", p.server, "1723", "name", p.username,
 					"password", p.password, "linkname", "vpn", "refuse-eap", "nodefaultroute",
 					"idle", "1800", "mtu", "1400", "mru", "1400", (p.mppe ? "+mppe" : "nomppe"),
 					"unit", PPP_UNIT};
@@ -42,8 +46,13 @@ public class VpnManager
 			return false;
 		}
 		
-		// Set up ip route
-		setupRoute();
+		if (!p.gfwlist) {
+			// Set up ip route
+			setupRoute();
+		} else {
+			// Set up gfwlist
+			setupGfwList(context);
+		}
 		
 		// Set up dns
 		setupDns(p);
@@ -56,6 +65,7 @@ public class VpnManager
 		StringBuilder s = new StringBuilder();
 		s.append(PKILL).append(" mtpd\n")
 		 .append(PKILL).append(" pppd\n")
+		 .append(IP).append(" ro flush table 200\n")
 		 .append(IP).append(" ro flush dev ").append(PPP_INTERFACE).append("\n")
 		 .append(IPTABLES).append(" -t nat -F\n")
 		 .append(IPTABLES).append(" -t nat -X\n")
@@ -82,7 +92,7 @@ public class VpnManager
 		return false;
 	}
 	
-	private static String getDefaultIface() {
+	private static void getDefaultIface() {
 		String routes;
 		
 		try {
@@ -96,28 +106,25 @@ public class VpnManager
 		if (routes != null) {
 			for (String route : routes.split("\n")) {
 				if (route.startsWith("default")) {
-					String iface = null;
-					boolean last = false;
+					boolean lastIsDev = false, lastIsVia = false;
 					for (String ele : route.split(" ")) {
-						if (last) {
-							iface = ele;
-							break;
+						if (lastIsDev) {
+							IFACE = ele;
+							lastIsDev = false;
+						} else if (lastIsVia) {
+							GATEWAY = ele;
+							lastIsVia = false;
 						} else if (ele.equals("dev")) {
-							last = true;
+							lastIsDev = true;
+						} else if (ele.equals("via")) {
+							lastIsVia = true;
 						}
 					}
 					
-					if (iface != null) {
-						return iface;
-					} else {
-						break;
-					}
+					break;
 				}
 			}
 		}
-		
-		// Can't load default interface? That's not possible.
-		return "eth0";
 	}
 	
 	private static void startMtpd(String[] args) {
@@ -168,7 +175,26 @@ public class VpnManager
 		
 		// Run
 		try {
-			Process p = RunCommand.run(s.toString());
+			RunCommand.run(s.toString()).waitFor();
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private static void setupGfwList(Context context) {
+		// Bypass the Chinese Websites
+		String[] gfwlist = context.getResources().getStringArray(R.array.gfwlist);
+
+		StringBuilder s = new StringBuilder();
+
+		for (String l : gfwlist) {
+			s.append(IP).append(" ro add ").append(l)
+						.append(" dev ").append(PPP_INTERFACE).append(" table 200\n");
+		}
+
+		// Run
+		try {
+			RunCommand.run(s.toString()).waitFor();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
